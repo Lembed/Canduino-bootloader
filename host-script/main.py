@@ -26,6 +26,7 @@ def main( ):
 
 	if rc:
 		exit( rc ) # die with errorcode
-# end main
 
-main( )
+
+if __name__ == "__main__":
+	main( )

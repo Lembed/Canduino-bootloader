@@ -41,7 +41,7 @@
 
 
 # MCU name
-MCU = atmega16m1
+MCU = at90can128
 
 #BOOTLOADER_BOARD_ID = 0xff
 #Store BOOTLOADER BOARD ID in last byte of EEPROM

@@ -41,7 +41,7 @@ volatile uint8_t at90can_messages_waiting;
 volatile uint8_t at90can_free_buffer;			//!< Stores the number of currently free MObs
 
 uint8_t message_number;
-uint8_t message_data_counter;	
+uint8_t message_data_counter;
 uint8_t message_data_length;
 uint8_t message_data[4];
 
@@ -52,7 +52,7 @@ at90can_init(void)
 
 	// switch CAN controller to reset mode
 	CANGCON |= (1 << SWRES);
-	
+
 	// set CAN Bit Timing
 	// (see datasheet page 260)
 
@@ -97,7 +97,7 @@ at90can_init(void)
 	CANBT2 = 0x0C;
 	CANBT3 = 0x36;
 #endif
-	
+
 	// activate CAN transmit- and receive-interrupt
 	CANGIT = 0;
 	CANGIE = (1 << ENIT) | (1 << ENRX) | (1 << ENTX);
@@ -105,11 +105,11 @@ at90can_init(void)
 	// set timer prescaler to 199 which results in a timer
 	// frequency of 10 kHz (at 16 MHz)
 	CANTCON = 199;
-	
+
 	// disable interrupts
 	CANIE1 = 0;
 	CANIE2 = 0;
-	
+
 	// disable all MObs
 #ifdef AT90CAN
 	for (uint8_t mob = 0; mob < 15; mob++)
@@ -118,16 +118,16 @@ at90can_init(void)
 #endif
 	{
 		CANPAGE = (mob << 4);
-		
+
 		// disable MOb (read-write required)
 		CANCDMOB &= 0;
 		CANSTMOB &= 0;
 	}
-	
+
 	// mark all MObs as free
 	at90can_messages_waiting = 0;
 	at90can_free_buffer = 3;
-	
+
 
 #ifdef AT90CAN
 	// set filter for MOb 0 to 7
@@ -138,31 +138,31 @@ at90can_init(void)
 #endif
 	{
 		CANPAGE = (mob << 4);
-		
+
 		CANSTMOB = 0;
-		CANCDMOB = (1 << CONMOB1)|(1<<IDE);
-		
+		CANCDMOB = (1 << CONMOB1) | (1 << IDE);
+
 		// only extended, non-rtr frames with identifier 0x133707ff
 
-		CANIDT4 = (0x133707ffUL <<3)&0xff;
-		CANIDT3 = (0x133707ffUL >>5)&0xff;
-		CANIDT2 = (0x133707ffUL >>13)&0xff;
-		CANIDT1 = (0x133707ffUL >>21)&0xff;
-		
-		CANIDM4 = (1 << IDEMSK) | (1 << RTRMSK) | ((0x1fffffffUL <<3)&0xff);
-		CANIDM3 = (0x1fffffffUL >>5)&0xff;
-		CANIDM2 = (0x1fffffffUL >>13)&0xff;
-		CANIDM1 = (0x1fffffffUL >>21)&0xff; 
+		CANIDT4 = (0x133707ffUL << 3) & 0xff;
+		CANIDT3 = (0x133707ffUL >> 5) & 0xff;
+		CANIDT2 = (0x133707ffUL >> 13) & 0xff;
+		CANIDT1 = (0x133707ffUL >> 21) & 0xff;
+
+		CANIDM4 = (1 << IDEMSK) | (1 << RTRMSK) | ((0x1fffffffUL << 3) & 0xff);
+		CANIDM3 = (0x1fffffffUL >> 5) & 0xff;
+		CANIDM2 = (0x1fffffffUL >> 13) & 0xff;
+		CANIDM1 = (0x1fffffffUL >> 21) & 0xff;
 
 		//CANIDM4 = (1 << IDEMSK) | (1 << RTRMSK);
 		//CANIDM3 = 0;
 		//CANIDM2 = (uint8_t) (0x7ff << 5);
 		//CANIDM1 = (uint8_t) (0x7ff >> 3);
 	}
-	
+
 	// enable interrupts for the MObs
 	CANIE2 = 0x3f;
-	
+
 	// activate CAN controller
 	CANGCON = (1 << ENASTB);
 }
@@ -173,37 +173,37 @@ at90can_init(void)
 
 
 #ifdef AT90CAN
-	ISR(CANIT_vect)
+ISR(CANIT_vect)
 #else
-	ISR(CAN_INT_vect)
+ISR(CAN_INT_vect)
 #endif
 {
 	uint8_t canpage;
 	uint8_t mob;
-	
+
 	if ((CANHPMOB & 0xF0) != 0xF0)
 	{
 		// save MOb page register
 		canpage = CANPAGE;
-		
+
 		// select MOb page with the highest priority
 		CANPAGE = CANHPMOB & 0xF0;
 		mob = (CANHPMOB >> 4);
-		
+
 		// a interrupt is only generated if a message was transmitted or received
 		if (CANSTMOB & (1 << TXOK))
 		{
 			// clear MOb
 			CANSTMOB &= 0;
 			CANCDMOB &= 0;
-			
+
 			at90can_free_buffer++;
 		}
 		else {
 			// a message was received successfully
 			at90can_messages_waiting++;
 		}
-		
+
 		// reset interrupt
 #ifdef AT90CAN
 		if (mob < 8) {
@@ -213,9 +213,9 @@ at90can_init(void)
 			CANIE1 &= ~(1 << (mob - 8));
 		}
 #else
-		CANIE2 &= ~(1<<mob);
+		CANIE2 &= ~(1 << mob);
 #endif
-		
+
 		// restore MOb page register
 		CANPAGE = canpage;
 	}
@@ -229,9 +229,9 @@ at90can_init(void)
 // ----------------------------------------------------------------------------
 // Overflow of CAN timer
 #ifdef AT90CAN
-	ISR(OVRIT_vect) {}
+ISR(OVRIT_vect) {}
 #else
-	ISR(CAN_TOVF_vect) {}
+ISR(CAN_TOVF_vect) {}
 #endif
 
 

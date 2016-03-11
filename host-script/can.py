@@ -22,7 +22,7 @@ class CanBus():
 		try:
 			self.socket = socket.socket( socket.AF_CAN, socket.SOCK_RAW, socket.CAN_RAW )
 			self.socket.bind( (interface,) )
-		except OSError:
+		except OSError: 
 			print( 'ERROR: OS Error' )
 			exit( 10 )
 	# __init__()
@@ -48,7 +48,7 @@ class CanBus():
 		id = can_id + (ext << 31)
 		return struct.pack( self.__can_frame_fmt, id, can_dlc, data )
 	#build_can_frame()
-
+ 
 
 
 	def getMsgNonBlocking( self ):

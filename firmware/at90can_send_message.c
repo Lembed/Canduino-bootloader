@@ -46,7 +46,7 @@ at90can_send_message(command_t type, uint8_t length)
 		if (at90can_free_buffer == 0) {
 			continue;
 		}
-		
+
 
 #ifdef AT90CAN
 		for (uint8_t mob = 8; mob < 15; mob++)
@@ -56,7 +56,7 @@ at90can_send_message(command_t type, uint8_t length)
 		{
 			// load MOb page
 			CANPAGE = mob << 4;
-			
+
 			// check if the MOb is in use
 			if ((CANCDMOB & ((1 << CONMOB1) | (1 << CONMOB0))) == 0)
 			{
@@ -64,38 +64,38 @@ at90can_send_message(command_t type, uint8_t length)
 				CANSTMOB &= 0;
 
 				// set identifier
-				CANIDT4 = (0x133707feUL <<3)&0xff;
-				CANIDT3 = (0x133707feUL >>5)&0xff;
-				CANIDT2 = (0x133707feUL >>13)&0xff;
-				CANIDT1 = (0x133707feUL >>21)&0xff;
-				
+				CANIDT4 = (0x133707feUL << 3) & 0xff;
+				CANIDT3 = (0x133707feUL >> 5) & 0xff;
+				CANIDT2 = (0x133707feUL >> 13) & 0xff;
+				CANIDT1 = (0x133707feUL >> 21) & 0xff;
+
 				//CANMSG = BOOTLOADER_BOARD_ID;
 				CANMSG = bootloader_board_id;
 				CANMSG = type;
 				CANMSG = message_number;
 				CANMSG = message_data_counter;
-				
+
 				// copy data
 				const uint8_t *p = message_data;
 				for (uint8_t i = 0; i < length; i++) {
 					CANMSG = *p++;
 				}
-				
+
 				// enable MOb interrupt
 #ifdef AT90CAN
 				CANIE1 |= (1 << (mob - 8));
 #else
-				CANIE2 |= (1<<mob);
+				CANIE2 |= (1 << mob);
 #endif
 
-				
+
 				ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
 					at90can_free_buffer--;
 				}
-				
+
 				// enable transmission
-				CANCDMOB = (1 << CONMOB0) | (1<<IDE) | (length + 4);
-				
+				CANCDMOB = (1 << CONMOB0) | (1 << IDE) | (length + 4);
+
 				return;
 			}
 		}

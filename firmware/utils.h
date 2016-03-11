@@ -52,19 +52,19 @@
 // ----------------------------------------------------------------------------
 
 #ifndef	TRUE
-	#define	TRUE	(1==1)
+#define	TRUE	(1==1)
 #elif !TRUE
-	#error	fehlerhafte Definition fuer TRUE
+#error	fehlerhafte Definition fuer TRUE
 #endif
 
 #ifndef FALSE
-	#define	FALSE	(1!=1)
+#define	FALSE	(1!=1)
 #elif FALSE
-	#error	fehlerhafte Definition fuer FALSE
+#error	fehlerhafte Definition fuer FALSE
 #endif
 
 #ifndef NULL
-	#define NULL ((void*)0)		//!< Nullzeiger
+#define NULL ((void*)0)		//!< Nullzeiger
 #endif
 
 // ----------------------------------------------------------------------------
@@ -94,7 +94,7 @@
  * #define LED   D,5		// PORTD, Pin 5
  *
  * SET_OUTPUT(LED);		// Pin als Ausgang schalten (wird z.B. zu DDRD |= (1<<5);)
- * 
+ *
  * SET(LED);				// LED aktivieren
  * \endcode
  *
@@ -102,16 +102,16 @@
  *
  * \code
  * #define SCHALTER   B,1		// PORTB, Pin 1
- * 
+ *
  * SET_INPUT_WITH_PULLUP(SCHALTER);
- * 
+ *
  * if (IS_SET(SCHALTER)) {
  * 		...
  * }
  * \endcode
- * 
+ *
  * Somit muss nur ein Define geändert werden sobald ein anderer Pin verwendet
- * werden soll. Außerdem muss nicht immer noch ein extra Define für den 
+ * werden soll. Außerdem muss nicht immer noch ein extra Define für den
  * entsprechenden Port angelegt werden wie es bisher immer der Fall war.
  */
 //@{

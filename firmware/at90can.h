@@ -53,7 +53,7 @@ extern volatile uint8_t at90can_messages_waiting;
 extern volatile uint8_t at90can_free_buffer;
 
 extern uint8_t message_number;			//!< Running number of the messages
-extern uint8_t message_data_counter;	
+extern uint8_t message_data_counter;
 extern uint8_t message_data_length;		//!< Length of the data-field
 extern uint8_t message_data[4];
 
@@ -64,17 +64,17 @@ typedef enum
 	SET_ADDRESS		= 2,
 	DATA			= 3,
 	START_APP		= 4,
-	
+
 	// only avilable in the "bigger" versions
 	GET_FUSEBITS	= 5,
 	CHIP_ERASE		= 6,
 	SET_BOARD_ID = 7,
-	
+
 	REQUEST					= 0x00,
 	SUCCESSFULL_RESPONSE	= 0x40,
 	ERROR_RESPONSE			= 0x80,
 	WRONG_NUMBER_REPSONSE	= 0xC0,
-	
+
 	NO_MESSAGE		= 0x3f
 } command_t;
 
@@ -83,9 +83,9 @@ typedef enum
 
 // ----------------------------------------------------------------------------
 /**
- * 
+ *
  * The lower eight MObs are used for receiption, the upper seven for
- * transmission. This separation simplifies the access to the registers 
+ * transmission. This separation simplifies the access to the registers
  * and leads to smaller code size.
  */
 void
@@ -94,9 +94,9 @@ at90can_init(void);
 // ----------------------------------------------------------------------------
 /**
  * \brief	Send a message
- * 
+ *
  * If all seven send buffers are used this method waits until one gets free.
- * 
+ *
  * \param	length	Length of the data segment (0-4)
  */
 void
@@ -105,7 +105,7 @@ at90can_send_message(command_t type, uint8_t length);
 // ----------------------------------------------------------------------------
 /**
  * \brief	Receive new messages
- * 
+ *
  * \return	Type of the message, NO_MESSAGE if no or an invalid message was
  * 			received.
  */
